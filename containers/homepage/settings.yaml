@@ -1,0 +1,29 @@
+---
+# For configuration options and examples, please see:
+# https://gethomepage.dev/configs/settings
+title: PJHomepage
+hideVersion: true
+language: en-GB
+theme: dark
+color: slate
+headerStyle: clean
+showStats: true
+statusStyle: "dot"
+useEqualHeights: true
+hideErrors: true
+layout: 
+  #Auto-Discovered1:
+   # style: column
+    #columns: 4
+  Media:
+    style: column
+    #columns: 4
+  Admin Console:
+    style: column
+    #columns: 3
+  Markets:
+    style: column
+    #columns: 2
+
+providers:
+

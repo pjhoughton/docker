@@ -1,0 +1,27 @@
+# Docker Compose NGINX Proxy Manager 
+services:
+  nginx-proxy-manager:
+    image: jc21/nginx-proxy-manager:latest
+    container_name: nginx-proxy-manager
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    ports:
+      - 80:80
+      - 443:443
+      - 81:81
+    volumes:
+      - ${DockerDir}/nginx_pm/data:/data
+      - ${DockerDir}/nginx_pm/letsencrypt:/etc/letsencrypt
+      - docker_sock:/var/run/docker.sock
+    restart: always
+    networks:
+      - backend
+    depends_on:
+      - autoheal
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:81 || exit 1"]
+      interval: 1m
+      timeout: 10s
+      retries: 3
