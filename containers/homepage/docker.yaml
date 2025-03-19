@@ -1,8 +1,0 @@
----
-# For configuration options and examples, please see:
-# https://gethomepage.dev/configs/docker/
-
-my-docker:
-  host: {{HOMEPAGE_VAR_DockerURL}}
-  port: 2375
-  socket: /var/run/docker.sock
