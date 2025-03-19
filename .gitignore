@@ -1,0 +1,33 @@
+# Ignore everything by default
+*
+
+# Ignore specifics 
+
+.env
+
+# Allow directories
+!*/
+!docker-compose/
+!docker/
+
+# Allow YAML files
+!*.yml
+!*.yaml
+!.gitignore
+
+
+# Allow Read Mes files 
+
+!.MD
+
+# Allow specific environment files
+!example.env
+
+
+# Ignore unnecessary or system files
+*.log
+*.tmp
+*.bak
+.DS_Store
+Thumbs.db
+
