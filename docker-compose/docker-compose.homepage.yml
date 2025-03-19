@@ -1,0 +1,52 @@
+# Docker Compose Homepage
+services:
+  homepage:
+    image: ghcr.io/gethomepage/homepage:latest
+    container_name: homepage
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+      - HOMEPAGE_ALLOWED_HOSTS=${HOMEPAGE_ALLOWED_HOSTS}
+      - HOMEPAGE_VAR_CockpitURL=${HOMEPAGE_VAR_CockpitURL}
+      - HOMEPAGE_VAR_DockerURL=${HOMEPAGE_VAR_DockerURL}
+      - HOMEPAGE_VAR_BazarrURL=${HOMEPAGE_VAR_BazarrURL}
+      - HOMEPAGE_VAR_HomeAssistantURL=${HOMEPAGE_VAR_HomeAssistantURL}
+      - HOMEPAGE_VAR_HomeserverURL=${HOMEPAGE_VAR_HomeserverURL}
+      - HOMEPAGE_VAR_NGINXProxyURL=${HOMEPAGE_VAR_NGINXProxyURL}
+      - HOMEPAGE_VAR_PlexURL=${HOMEPAGE_VAR_PlexURL}
+      - HOMEPAGE_VAR_RadarrURL=${HOMEPAGE_VAR_RadarrURL}
+      - HOMEPAGE_VAR_SabnzbdURL=${HOMEPAGE_VAR_SabnzbdURL}
+      - HOMEPAGE_VAR_SonarrURL=${HOMEPAGE_VAR_SonarrURL}
+      - HOMEPAGE_VAR_UnifiURL=${HOMEPAGE_VAR_UnifiURL}
+      - HOMEPAGE_VAR_XCPNG1URL=${HOMEPAGE_VAR_XCPNG1URL}
+      - HOMEPAGE_VAR_XOURL=${HOMEPAGE_VAR_XOURL}
+      - HOMEPAGE_VAR_BazarrAPI=${HOMEPAGE_VAR_BazarrAPI}
+      - HOMEPAGE_VAR_RadarrAPI=${HOMEPAGE_VAR_RadarrAPI}
+      - HOMEPAGE_VAR_SonarrAPI=${HOMEPAGE_VAR_SonarrAPI}
+      - HOMEPAGE_VAR_SabnzbdAPI=${HOMEPAGE_VAR_SabnzbdAPI}
+      - HOMEPAGE_VAR_CoinmarketcapAPI=${HOMEPAGE_VAR_CoinmarketcapAPI}
+      - HOMEPAGE_VAR_HomeAssistantAPI=${HOMEPAGE_VAR_HomeAssistantAPI}
+      - HOMEPAGE_VAR_openweathermapAPI=${HOMEPAGE_VAR_openweathermapAPI}
+      - HOMEPAGE_VAR_NasUser=${HOMEPAGE_VAR_NasUser}
+      - HOMEPAGE_VAR_NASPassword=${HOMEPAGE_VAR_NASPassword}
+      - HOMEPAGE_VAR_NGINXUsername=${HOMEPAGE_VAR_NGINXUsername}
+      - HOMEPAGE_VAR_NGINXPassword=${HOMEPAGE_VAR_NGINXPassword}
+ 
+    ports:
+      - 3000:3000
+    volumes:
+      - ${DockerDir}/homepage:/app/config
+      - ${DockerDir}/homepage/public/icons:/app/public/icons
+      - docker_sock:/var/run/docker.sock
+    restart: always
+    depends_on:
+      - nginx-proxy-manager
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:3000 || exit 1"]
+      interval: 1m
+      timeout: 10s
+      retries: 3
+    networks:
+      - backend
+

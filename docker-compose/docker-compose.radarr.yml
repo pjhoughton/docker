@@ -1,0 +1,25 @@
+# Docker Compose radarr
+services:
+  radarr:
+    image: linuxserver/radarr
+    container_name: radarr
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - ${DockerDir}/radarr:/config
+      - ${MediaDir}/video/movies:/movies
+      - ${MediaDir}/downloads/complete:/downloads
+    ports:
+      - 7878:7878
+    restart: always
+    networks:
+      - backend
+    depends_on:
+      - sabnzbd
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:7878 || exit 1"]
+      interval: 1m
+      timeout: 10s
+      retries: 3
