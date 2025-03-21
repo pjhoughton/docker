@@ -1,6 +1,4 @@
 #Docker Compose master file 
-version: '3.8' # Define the Compose file version
-
 # Define global networks
 networks:
   backend:
