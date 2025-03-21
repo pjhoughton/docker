@@ -42,7 +42,7 @@ services:
     deploy:
       resources:
         limits:
-          memory: 256M  # Limit memory usage to 256MB
+          memory: 512MB  # Limit memory usage to 256MB
           cpus: '0.50'  # Restrict CPU usage to 50% of a single core
         reservations:
           memory: 128M  # Reserve 128MB of memory as a minimum

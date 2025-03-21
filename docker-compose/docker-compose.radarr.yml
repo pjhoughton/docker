@@ -37,8 +37,8 @@ services:
     deploy:
       resources:
         limits:
-          memory: 512M   # Limit memory usage to 512MB
-          cpus: '0.50'   # Restrict CPU usage to 50% of a single core
+          memory: 1GB   # Limit memory usage to 512MB
+          cpus: '0.75'   # Restrict CPU usage to 50% of a single core
         reservations:
           memory: 256M   # Reserve 256MB of memory
           cpus: '0.25'   # Reserve 25% of a single core
