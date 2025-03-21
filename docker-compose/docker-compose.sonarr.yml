@@ -1,25 +1,48 @@
 # Docker Compose sonarr
 services:
   sonarr:
-    image: linuxserver/sonarr
-    container_name: sonarr
+    image: linuxserver/sonarr:latest # Use the Sonarr image provided by LinuxServer
+    container_name: sonarr # Assign a clear container name for better management
+    restart: always # Ensure the container automatically restarts on failure
     environment:
+      # Define user ID, group ID, and timezone for proper permissions
       - PUID=${PUID}
       - PGID=${PGID}
       - TZ=${TZ}
     volumes:
-      - ${DockerDir}/sonarr:/config
-      - ${MediaDir}/video/tv-shows:/tv
-      - ${MediaDir}/downloads/complete:/downloads
+      # Persistent storage for configurations and media
+      - ${DockerDir}/sonarr:/config       # Store Sonarr's configuration files
+      - ${MediaDir}/video/tv-shows:/tv   # Map TV shows directory
+      - ${MediaDir}/downloads/complete:/downloads # Map completed downloads
     ports:
+      # Expose the web interface on port 8989
       - 8989:8989
-    restart: always
     networks:
-      - backend
+      - backend # Attach to the backend network
     depends_on:
+      # Ensure sabnzbd service starts before Sonarr
       - sabnzbd
     healthcheck:
+      # Verify the container's health by checking the web interface
       test: ["CMD-SHELL", "curl -f http://localhost:8989 || exit 1"]
-      interval: 1m
-      timeout: 10s
-      retries: 3
+      interval: 1m     # Perform health checks every 1 minute
+      timeout: 10s     # Mark unhealthy if response takes longer than 10 seconds
+      retries: 3       # Retry up to 3 times before marking the container unhealthy
+    logging:
+      # Enable structured logging for log file rotation
+      driver: "json-file"
+      options:
+        max-size: "10m" # Limit log file size to 10MB
+        max-file: "3"   # Retain up to 3 log files
+    deploy:
+      resources:
+        limits:
+          memory: 512M  # Limit memory usage to 512MB
+          cpus: '0.50'  # Restrict CPU usage to 50% of a single core
+        reservations:
+          memory: 256M  # Reserve 256MB of memory as a minimum
+          cpus: '0.25'  # Reserve 25% of a single core
+
+networks:
+  backend:
+    driver: bridge # Define backend network for service communication

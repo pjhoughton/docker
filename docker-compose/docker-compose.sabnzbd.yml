@@ -1,25 +1,48 @@
 # Docker Compose sabnzbd
 services:
   sabnzbd:
-    image: linuxserver/sabnzbd
-    container_name: sabnzbd
+    image: linuxserver/sabnzbd:latest # Use the official SABnzbd image from LinuxServer
+    container_name: sabnzbd # Assign a clear container name for easy identification
+    restart: always # Ensure the container restarts automatically on failure
     environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
-      - TZ=${TZ}
+      # Set environment variables for permissions and timezone
+      - PUID=${PUID}       # User ID for permission management
+      - PGID=${PGID}       # Group ID for permission management
+      - TZ=${TZ}           # Timezone for accurate logs and schedules
     volumes:
-      - ${DockerDir}/sabnzbd:/config
-      - ${MediaDir}/downloads/complete:/downloads
-      - ${MediaDir}/downloads/incomplete:/incomplete-downloads
+      # Persistent storage for configurations and downloads
+      - ${DockerDir}/sabnzbd:/config                   # Store configuration files
+      - ${MediaDir}/downloads/complete:/downloads      # Map completed downloads directory
+      - ${MediaDir}/downloads/incomplete:/incomplete-downloads # Map incomplete downloads directory
     ports:
+      # Expose the SABnzbd web interface
       - 8080:8080
-    restart: always
     networks:
-      - backend
+      - backend # Connect to the backend network
     depends_on:
+      # Ensure nginx-proxy-manager starts before SABnzbd
       - nginx-proxy-manager
     healthcheck:
+      # Health check to monitor SABnzbd's status
       test: ["CMD-SHELL", "curl -f http://localhost:8080 || exit 1"]
-      interval: 1m
-      timeout: 10s
-      retries: 3
+      interval: 1m      # Perform health checks every 1 minute
+      timeout: 10s      # Timeout after 10 seconds if no response
+      retries: 3        # Retry up to 3 times before marking the container unhealthy
+    logging:
+      # Enable structured logging for better log management
+      driver: "json-file"
+      options:
+        max-size: "10m"  # Limit log file size to 10MB
+        max-file: "3"    # Retain up to 3 log files
+    deploy:
+      resources:
+        limits:
+          memory: 512M   # Limit memory usage to 512MB
+          cpus: '0.50'   # Restrict CPU usage to 50% of a single core
+        reservations:
+          memory: 256M   # Reserve 256MB of memory
+          cpus: '0.25'   # Reserve 25% of a single core
+
+networks:
+  backend:
+    driver: bridge # Define the backend network for secure communication

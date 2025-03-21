@@ -1,33 +1,54 @@
-# Docker Compose Unifi Controller
+# Docker Compose for Unifi controller
+
 services:
   unifi-controller:
-    image: lscr.io/linuxserver/unifi-controller:latest
-    container_name: unifi-controller
+    image: lscr.io/linuxserver/unifi-controller:latest # Latest Unifi Controller image from LinuxServer
+    container_name: unifi-controller # Assign a clear container name for easy management
+    restart: unless-stopped # Restart the container unless it is manually stopped
     environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
-      - TZ=${TZ}
-      - MEM_LIMIT=1024 #optional
-      - MEM_STARTUP=1024 #optional
+      # Set environment variables for permissions and memory limits
+      - PUID=${PUID}       # User ID for permission management
+      - PGID=${PGID}       # Group ID for permission management
+      - TZ=${TZ}           # Timezone for correct logging
+      - MEM_LIMIT=1024     # Optional: Limit memory usage (in MB)
+      - MEM_STARTUP=1024   # Optional: Allocate memory at startup (in MB)
     volumes:
-      - ${DockerDir}/unifi:/config
+      # Persistent storage for configurations
+      - ${DockerDir}/unifi:/config # Store configuration files
     ports:
-      - 8443:8443
-      - 3478:3478/udp
-      - 10001:10001/udp
-      - 8080:8080
-      - 1900:1900/udp #optional
-      - 8843:8843 #optional
-      - 8880:8880 #optional
-      - 6789:6789 #optional
-      - 5514:5514/udp #optional
-    restart: unless-stopped
+      # Map necessary ports for Unifi Controller functionality
+      - 8443:8443           # HTTPS port for the controller
+      - 3478:3478/udp       # UDP port for STUN
+      - 10001:10001/udp     # UDP port for device communication
+      - 8080:8080           # HTTP port for device and controller communication
+      - 1900:1900/udp       # Optional: UDP for SSDP
+      - 8843:8843           # Optional: HTTPS port for guest portal
+      - 8880:8880           # Optional: HTTP port for guest portal
+      - 6789:6789           # Optional: UDP port for speed test
+      - 5514:5514/udp       # Optional: UDP port for remote syslog
     networks:
-      - backend
+      - backend # Connect to the backend network
     healthcheck:
+      # Regular health checks to monitor container status
       test: ["CMD-SHELL", "curl -f http://localhost:8443 || exit 1"]
-      interval: 1m
-      timeout: 10s
-      retries: 3
+      interval: 1m      # Check health every 1 minute
+      timeout: 10s      # Timeout after 10 seconds if no response
+      retries: 3        # Retry up to 3 times before marking the container unhealthy
+    logging:
+      # Enable structured logging with limits for log management
+      driver: "json-file"
+      options:
+        max-size: "10m"  # Limit log file size to 10MB
+        max-file: "3"    # Retain up to 3 log files
+    deploy:
+      resources:
+        limits:
+          memory: 1G     # Limit memory usage to 1GB
+          cpus: '0.75'   # Restrict CPU usage to 75% of a single core
+        reservations:
+          memory: 512M   # Reserve 512MB of memory
+          cpus: '0.25'   # Reserve 25% of a single core
 
-
+networks:
+  backend:
+    driver: bridge # Define backend network for isolated communication

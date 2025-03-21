@@ -1,25 +1,48 @@
 # Docker Compose radarr
 services:
   radarr:
-    image: linuxserver/radarr
-    container_name: radarr
+    image: linuxserver/radarr:latest # Use the official Radarr image from LinuxServer
+    container_name: radarr # Assign a clear container name for easy identification
+    restart: always # Ensure the container restarts automatically on failure
     environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
-      - TZ=${TZ}
+      # Set environment variables for permissions and timezone
+      - PUID=${PUID}       # User ID for permission management
+      - PGID=${PGID}       # Group ID for permission management
+      - TZ=${TZ}           # Timezone for accurate logging and scheduling
     volumes:
-      - ${DockerDir}/radarr:/config
-      - ${MediaDir}/video/movies:/movies
-      - ${MediaDir}/downloads/complete:/downloads
+      # Persistent storage for configurations and media
+      - ${DockerDir}/radarr:/config              # Store Radarr configuration files
+      - ${MediaDir}/video/movies:/movies        # Map movies directory for media management
+      - ${MediaDir}/downloads/complete:/downloads # Map completed downloads directory
     ports:
+      # Expose the Radarr web interface
       - 7878:7878
-    restart: always
     networks:
-      - backend
+      - backend # Connect to the backend network
     depends_on:
+      # Ensure SABnzbd is running before starting Radarr
       - sabnzbd
     healthcheck:
+      # Regular health checks to verify Radarr's status
       test: ["CMD-SHELL", "curl -f http://localhost:7878 || exit 1"]
-      interval: 1m
-      timeout: 10s
-      retries: 3
+      interval: 1m      # Check every 1 minute
+      timeout: 10s      # Timeout after 10 seconds if no response
+      retries: 3        # Retry up to 3 times before marking the container as unhealthy
+    logging:
+      # Enable structured logging for effective log management
+      driver: "json-file"
+      options:
+        max-size: "10m"  # Limit log file size to 10MB
+        max-file: "3"    # Retain up to 3 log files
+    deploy:
+      resources:
+        limits:
+          memory: 512M   # Limit memory usage to 512MB
+          cpus: '0.50'   # Restrict CPU usage to 50% of a single core
+        reservations:
+          memory: 256M   # Reserve 256MB of memory
+          cpus: '0.25'   # Reserve 25% of a single core
+
+networks:
+  backend:
+    driver: bridge # Define the backend network for communication

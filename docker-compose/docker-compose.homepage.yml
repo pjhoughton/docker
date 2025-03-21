@@ -1,14 +1,16 @@
-# Docker Compose Homepage
+#Docker Compose Homepage
 services:
   homepage:
-    image: ghcr.io/gethomepage/homepage:latest
-    container_name: homepage
+    image: ghcr.io/gethomepage/homepage:latest # Use the latest version of the Homepage container
+    container_name: homepage # Assign a clear container name for easy identification
+    restart: always # Restart the container on failure
     environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
-      - TZ=${TZ}
-      - HOMEPAGE_ALLOWED_HOSTS=${HOMEPAGE_ALLOWED_HOSTS}
-      - HOMEPAGE_VAR_CockpitURL=${HOMEPAGE_VAR_CockpitURL}
+      # Set environment variables for permissions, timezone, and app-specific configurations
+      - PUID=${PUID}                         # User ID for proper permissions
+      - PGID=${PGID}                         # Group ID for proper permissions
+      - TZ=${TZ}                             # Timezone for accurate logs and schedules
+      - HOMEPAGE_ALLOWED_HOSTS=${HOMEPAGE_ALLOWED_HOSTS} # Hosts allowed to access Homepage
+      - HOMEPAGE_VAR_CockpitURL=${HOMEPAGE_VAR_CockpitURL} # Custom environment variables for URLs
       - HOMEPAGE_VAR_DockerURL=${HOMEPAGE_VAR_DockerURL}
       - HOMEPAGE_VAR_BazarrURL=${HOMEPAGE_VAR_BazarrURL}
       - HOMEPAGE_VAR_HomeAssistantURL=${HOMEPAGE_VAR_HomeAssistantURL}
@@ -32,21 +34,40 @@ services:
       - HOMEPAGE_VAR_NASPassword=${HOMEPAGE_VAR_NASPassword}
       - HOMEPAGE_VAR_NGINXUsername=${HOMEPAGE_VAR_NGINXUsername}
       - HOMEPAGE_VAR_NGINXPassword=${HOMEPAGE_VAR_NGINXPassword}
- 
     ports:
+      # Map the web interface port
       - 3000:3000
     volumes:
-      - ${DockerDir}/homepage:/app/config
-      - ${DockerDir}/homepage/public/icons:/app/public/icons
-      - docker_sock:/var/run/docker.sock
-    restart: always
+      # Persistent storage for configurations and public assets
+      - ${DockerDir}/homepage:/app/config           # Store configuration files
+      - ${DockerDir}/homepage/public/icons:/app/public/icons # Store custom icons
+      - docker_sock:/var/run/docker.sock:ro        # Mount the Docker socket (read-only for security)
+    networks:
+      - backend # Connect to the backend network
     depends_on:
+      # Ensure nginx-proxy-manager starts before Homepage
       - nginx-proxy-manager
     healthcheck:
+      # Health check to monitor Homepage's availability
       test: ["CMD-SHELL", "curl -f http://localhost:3000 || exit 1"]
-      interval: 1m
-      timeout: 10s
-      retries: 3
-    networks:
-      - backend
+      interval: 1m      # Check every 1 minute
+      timeout: 10s      # Timeout after 10 seconds if no response
+      retries: 3        # Retry up to 3 times before marking the container as unhealthy
+    logging:
+      # Enable structured logging for better log management
+      driver: "json-file"
+      options:
+        max-size: "10m" # Limit log file size to 10MB
+        max-file: "3"   # Retain up to 3 log files
+    deploy:
+      resources:
+        limits:
+          memory: 512M  # Limit memory usage to 512MB
+          cpus: '0.50'  # Restrict CPU usage to 50% of a single core
+        reservations:
+          memory: 256M  # Reserve 256MB of memory
+          cpus: '0.25'  # Reserve 25% of a single core
 
+networks:
+  backend:
+    driver: bridge # Define backend network for isolated communication

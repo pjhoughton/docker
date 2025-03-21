@@ -1,27 +1,58 @@
 # Docker Compose NGINX Proxy Manager 
+version: '3.8' # Define the Compose file version for compatibility and feature set
+
 services:
   nginx-proxy-manager:
-    image: jc21/nginx-proxy-manager:latest
-    container_name: nginx-proxy-manager
+    image: jc21/nginx-proxy-manager:latest # Use the latest version of NGINX Proxy Manager
+    container_name: nginx-proxy-manager # Assign a clear container name for easier identification
+    restart: always # Ensure the container always restarts for reliability
     environment:
+      # Define user ID, group ID, and timezone from environment variables
       - PUID=${PUID}
       - PGID=${PGID}
       - TZ=${TZ}
     ports:
-      - 80:80
-      - 443:443
-      - 81:81
+      # Expose required ports for the service
+      - 80:80    # HTTP traffic
+      - 443:443  # HTTPS traffic
+      - 81:81    # Admin interface
     volumes:
-      - ${DockerDir}/nginx_pm/data:/data
-      - ${DockerDir}/nginx_pm/letsencrypt:/etc/letsencrypt
-      - docker_sock:/var/run/docker.sock
-    restart: always
+      # Bind mount volumes for data persistence
+      - ${DockerDir}/nginx_pm/data:/data           # Store service data
+      - ${DockerDir}/nginx_pm/letsencrypt:/etc/letsencrypt # Store SSL certificates
+      - docker_sock:/var/run/docker.sock:ro       # Mount Docker socket (read-only for security)
     networks:
+      # Attach to the backend network
       - backend
     depends_on:
+      # Ensure the Autoheal service is started before this container
       - autoheal
     healthcheck:
+      # Health check to verify container's admin interface is responsive
       test: ["CMD-SHELL", "curl -f http://localhost:81 || exit 1"]
-      interval: 1m
-      timeout: 10s
-      retries: 3
+      interval: 1m     # Check every 1 minute
+      timeout: 10s     # Timeout after 10 seconds
+      retries: 3       # Retry up to 3 times before marking the container as unhealthy
+    logging:
+      # Configure structured logging
+      driver: "json-file"
+      options:
+        max-size: "10m" # Limit log file size to 10MB
+        max-file: "3"   # Retain up to 3 log files
+    deploy:
+      resources:
+        limits:
+          memory: 256M  # Limit memory usage to 256MB
+          cpus: '0.50'  # Restrict CPU usage to 50% of a single core
+        reservations:
+          memory: 128M  # Reserve 128MB of memory as a minimum
+          cpus: '0.25'  # Reserve 25% of a single core
+
+volumes:
+  # Define the Docker socket volume
+  docker_sock:
+
+networks:
+  # Define the backend network for isolated communication
+  backend:
+    driver: bridge
