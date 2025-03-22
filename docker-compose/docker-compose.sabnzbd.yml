@@ -18,10 +18,11 @@ services:
       # Expose the SABnzbd web interface
       - 8080:8080
     networks:
-      - backend # Connect to the backend network
+      - backend # Connect to the backend network  
     depends_on:
-      # Ensure nginx-proxy-manager starts before SABnzbd
-      - nginx-proxy-manager
+    # Ensure nginx-proxy-manager is up
+      nginx-proxy-manager:
+        condition: service_healthy
     healthcheck:
       # Health check to monitor SABnzbd's status
       test: ["CMD-SHELL", "curl -f http://localhost:8080 || exit 1"]

@@ -1,5 +1,4 @@
 # Docker Compose NGINX Proxy Manager 
-version: '3.8' # Define the Compose file version for compatibility and feature set
 
 services:
   nginx-proxy-manager:
@@ -25,8 +24,9 @@ services:
       # Attach to the backend network
       - backend
     depends_on:
-      # Ensure the Autoheal service is started before this container
-      - autoheal
+    # Ensure auto heal is up
+      autoheal:
+        condition: service_healthy
     healthcheck:
       # Health check to verify container's admin interface is responsive
       test: ["CMD-SHELL", "curl -f http://localhost:81 || exit 1"]

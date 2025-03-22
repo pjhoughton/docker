@@ -27,7 +27,6 @@ services:
 
 volumes:
   docker_sock:
-
 networks:
   backend:
     driver: bridge

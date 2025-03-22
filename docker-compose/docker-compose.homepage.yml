@@ -45,8 +45,9 @@ services:
     networks:
       - backend # Connect to the backend network
     depends_on:
-      # Ensure nginx-proxy-manager starts before Homepage
-      - nginx-proxy-manager
+    # Ensure nginx-proxy-manager is up
+      nginx-proxy-manager:
+        condition: service_healthy
     healthcheck:
       # Health check to monitor Homepage's availability
       test: ["CMD-SHELL", "curl -f http://localhost:3000 || exit 1"]

@@ -20,8 +20,9 @@ services:
     networks:
       - backend # Attach to the backend network
     depends_on:
-      # Ensure sabnzbd service starts before Sonarr
-      - sabnzbd
+    # Ensure sabnzdb is up
+      sabnzbd:
+        condition: service_healthy
     healthcheck:
       # Verify the container's health by checking the web interface
       test: ["CMD-SHELL", "curl -f http://localhost:8989 || exit 1"]

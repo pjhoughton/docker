@@ -20,8 +20,9 @@ services:
     networks:
       - backend # Connect to the backend network
     depends_on:
-      # Ensure SABnzbd is running before starting Radarr
-      - sabnzbd
+    # Ensure sabnzdb is up
+      sabnzbd:
+        condition: service_healthy
     healthcheck:
       # Regular health checks to verify Radarr's status
       test: ["CMD-SHELL", "curl -f http://localhost:7878 || exit 1"]
