@@ -53,7 +53,7 @@ services:
       test: ["CMD-SHELL", "curl -f http://localhost:3000 || exit 1"]
       interval: 1m      # Check every 1 minute
       timeout: 10s      # Timeout after 10 seconds if no response
-      retries: 3        # Retry up to 3 times before marking the container as unhealthy
+      retries: 5        # Retry up to 3 times before marking the container as unhealthy
     logging:
       # Enable structured logging for better log management
       driver: "json-file"

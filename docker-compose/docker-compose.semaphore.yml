@@ -1,0 +1,35 @@
+# Docker Compose for Ansible Semaphore
+services:
+  ansible_semaphore:
+    image: semaphoreui/semaphore:latest
+    container_name: ansible_semaphore
+    ports:
+      - "3100:3000" # Remap to port 3100 instead of 3000 as it's used by Homepage
+    volumes:
+      - ${DockerDir}/semaphore/data:/data # Store service data
+      - /home/paul/.ssh/id_ed25519_ansible.git:/data/id_ed25519 # Mount SSH private key
+    environment:
+      PUID: ${PUID} # User ID from environment variables
+      PGID: ${PGID} # Group ID from environment variables
+      TZ: ${TZ}     # Timezone from environment variables
+      SEMAPHORE_DB_DIALECT: bolt
+      SEMAPHORE_ADMIN_PASSWORD: ${SEMAPHORE_Password}
+      SEMAPHORE_ADMIN_NAME: admin
+      SEMAPHORE_ADMIN_EMAIL: admin@localhost
+      SEMAPHORE_ADMIN: admin
+      SEMAPHORE_PLAYBOOKS_GIT_REPO: ${Ansible_GIT_REPO}
+      SEMAPHORE_PLAYBOOKS_GIT_BRANCH: ${GIT_BRANCH:-main} # Default branch to 'main' if not set
+      SEMAPHORE_GIT_PRIVATE_KEY: /data/id_ed25519
+    restart: always
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5" # Limit to half a CPU
+          memory: "512M" # Limit to 512 MB of memory
+        reservations:
+          cpus: "0.25" # Reserve a quarter of a CPU
+          memory: "256M" # Reserve 256 MB of memory
+
+networks:
+  backend:
+    driver: bridge

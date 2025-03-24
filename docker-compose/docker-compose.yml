@@ -52,7 +52,14 @@ services:
     extends:
       file: ./docker-compose.bazarr.yml
       service: bazarr
+      
+
 # Currently unused so commented out 
+ # ansible_semaphore:
+    # Subtitle management for movies and TV shows
+ #   extends:
+ #     file: ./docker-compose.semaphore.yml
+ #     service: ansible_semaphore
   # gluetun:
   #   # VPN container for securing internet traffic
   #   extends:
