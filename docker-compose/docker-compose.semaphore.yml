@@ -7,7 +7,7 @@ services:
       - "3100:3000" # Remap to port 3100 instead of 3000 as it's used by Homepage
     volumes:
       - ${DockerDir}/semaphore/data:/data # Store service data
-      - /home/paul/.ssh/id_ed25519_ansible.git:/data/id_ed25519 # Mount SSH private key
+      - ${Ansible_SSH_KEY_PATH}:/data/id_ed25519 # Mount SSH private key
     environment:
       PUID: ${PUID} # User ID from environment variables
       PGID: ${PGID} # Group ID from environment variables
