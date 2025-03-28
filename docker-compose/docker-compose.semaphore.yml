@@ -1,35 +1,52 @@
-# Docker Compose for Ansible Semaphore
+# Docker Compose file for deploying Ansible Semaphore
 services:
-  ansible_semaphore:
-    image: semaphoreui/semaphore:latest
-    container_name: ansible_semaphore
-    ports:
-      - "3100:3000" # Remap to port 3100 instead of 3000 as it's used by Homepage
+  mysql:
+    image: mysql:8.0
+    container_name: semaphore_mysql
+    restart: unless-stopped
+    hostname: mysql
     volumes:
-      - ${DockerDir}/semaphore/data:/data # Store service data
-      - ${Ansible_SSH_KEY_PATH}:/data/id_ed25519 # Mount SSH private key
+      - ${DockerDir}/semaphore/mysql:/var/lib/mysql # Persistent MySQL data stored on NAS
     environment:
-      PUID: ${PUID} # User ID from environment variables
-      PGID: ${PGID} # Group ID from environment variables
-      TZ: ${TZ}     # Timezone from environment variables
-      SEMAPHORE_DB_DIALECT: bolt
-      SEMAPHORE_ADMIN_PASSWORD: ${SEMAPHORE_Password}
+      PUID: ${PUID} # User ID (from environment variables)
+      PGID: ${PGID} # Group ID (from environment variables)
+      TZ: ${TZ} # Timezone configuration (from environment variables)
+      MYSQL_RANDOM_ROOT_PASSWORD: 'yes'
+      MYSQL_DATABASE: semaphore
+      MYSQL_USER: ${MYSQLUser}
+      MYSQL_PASSWORD: ${MYSQLPassword}
+    networks:
+      - backend
+
+  semaphore:
+    image: semaphoreui/semaphore:latest
+    container_name: semaphore
+    restart: unless-stopped
+    ports:
+      - "3100:3000" # Map port 3100 on the host to port 3000 in the container
+    environment:
+      PUID: ${PUID} # User ID (from environment variables)
+      PGID: ${PGID} # Group ID (from environment variables)
+      TZ: ${TZ} # Timezone configuration (from environment variables)
+      SEMAPHORE_DB_USER: ${MYSQLUser}
+      SEMAPHORE_DB_PASS: ${MYSQLPassword}
+      SEMAPHORE_DB_HOST: mysql # The MySQL service hostname
+      SEMAPHORE_DB_PORT: 3306 # MySQL port
+      SEMAPHORE_DB_DIALECT: mysql
+      SEMAPHORE_DB: semaphore
+      SEMAPHORE_PLAYBOOK_PATH: /tmp/semaphore/
+      SEMAPHORE_ADMIN_PASSWORD: ${SEMAPHOREPassword}
       SEMAPHORE_ADMIN_NAME: admin
       SEMAPHORE_ADMIN_EMAIL: admin@localhost
       SEMAPHORE_ADMIN: admin
-      SEMAPHORE_PLAYBOOKS_GIT_REPO: ${Ansible_GIT_REPO}
-      SEMAPHORE_PLAYBOOKS_GIT_BRANCH: ${GIT_BRANCH:-main} # Default branch to 'main' if not set
-      SEMAPHORE_GIT_PRIVATE_KEY: /data/id_ed25519
-    restart: always
-    deploy:
-      resources:
-        limits:
-          cpus: "0.5" # Limit to half a CPU
-          memory: "512M" # Limit to 512 MB of memory
-        reservations:
-          cpus: "0.25" # Reserve a quarter of a CPU
-          memory: "256M" # Reserve 256 MB of memory
+      SEMAPHORE_ACCESS_KEY_ENCRYPTION: SEMPAPHOREKey
+      SEMAPHORE_LDAP_ACTIVATED: 'no' # Set to 'yes' to enable LDAP
 
-networks:
-  backend:
-    driver: bridge
+    depends_on:
+      - mysql # Ensure mysql starts before semaphore
+    volumes:
+      - ${DockerDir}/semaphore/data:/data  # Persist service data to host directory
+      - ${Ansible_SSH_KEY_PATH}:/data/id_ed25519
+      
+    networks:
+      - backend

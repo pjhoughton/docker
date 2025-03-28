@@ -1,4 +1,5 @@
 #Docker Compose master file 
+
 # Define global networks
 networks:
   backend:
@@ -52,7 +53,18 @@ services:
     extends:
       file: ./docker-compose.bazarr.yml
       service: bazarr
-      
+
+  semaphore:
+    # Semaphore service
+    extends:
+      file: ./docker-compose.semaphore.yml
+      service: semaphore
+
+  mysql:
+    # MySQL service required by Semaphore
+    extends:
+      file: ./docker-compose.semaphore.yml
+      service: mysql
 
 # Currently unused so commented out 
  # ansible_semaphore:
