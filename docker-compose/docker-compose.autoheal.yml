@@ -7,6 +7,9 @@ services:
     environment:
       - AUTOHEAL_CONTAINER_LABEL=all
       - AUTOHEAL_INTERVAL=30
+      - PUID=${PUID}       # User ID for permission management
+      - PGID=${PGID}       # Group ID for permission management
+      - TZ=${TZ}           # Timezone for accurate logs and schedules
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
     networks:
@@ -29,4 +32,4 @@ volumes:
   docker_sock:
 networks:
   backend:
-    driver: bridge
+    external: true

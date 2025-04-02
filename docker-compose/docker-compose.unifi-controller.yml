@@ -51,4 +51,4 @@ services:
 
 networks:
   backend:
-    driver: bridge # Define backend network for isolated communication
+    external: true

@@ -65,13 +65,18 @@ services:
     extends:
       file: ./docker-compose.semaphore.yml
       service: mysql
+      
+
 
 # Currently unused so commented out 
- # ansible_semaphore:
-    # Subtitle management for movies and TV shows
- #   extends:
- #     file: ./docker-compose.semaphore.yml
- #     service: ansible_semaphore
+
+  #xen-orchestra:
+    
+  # xen-orchestra
+  #    extends:
+  #     file: ./docker-compose.xo.yml
+  #     service: xen-orchestra
+
   # gluetun:
   #   # VPN container for securing internet traffic
   #   extends:

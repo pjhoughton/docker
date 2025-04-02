@@ -53,6 +53,5 @@ volumes:
   docker_sock:
 
 networks:
-  # Define the backend network for isolated communication
   backend:
-    driver: bridge
+    external: true

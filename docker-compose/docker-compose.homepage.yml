@@ -43,14 +43,16 @@ services:
       - ${DockerDir}/homepage/public/icons:/app/public/icons # Store custom icons
       - docker_sock:/var/run/docker.sock:ro        # Mount the Docker socket (read-only for security)
     networks:
-      - backend # Connect to the backend network
+      backend:
+        aliases:
+          - homepage
     depends_on:
     # Ensure nginx-proxy-manager is up
       nginx-proxy-manager:
         condition: service_healthy
     healthcheck:
       # Health check to monitor Homepage's availability
-      test: ["CMD-SHELL", "curl -f http://localhost:3000 || exit 1"]
+      test: ["CMD-SHELL", "curl -f http://homepage:3000 || exit 1"]
       interval: 1m      # Check every 1 minute
       timeout: 10s      # Timeout after 10 seconds if no response
       retries: 5        # Retry up to 3 times before marking the container as unhealthy

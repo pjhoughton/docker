@@ -48,5 +48,5 @@ services:
           cpus: '0.25'  # Reserve 25% of a single core
 
 networks:
-  default:
-    driver: bridge # Use the default bridge network
+  backend:
+    external: true
