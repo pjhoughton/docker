@@ -9,7 +9,7 @@
 !*/
 !docker-compose/
 !docker/
-!docker/containers/homepage/
+!containers/homepage/
 
 # Allow YAML files
 !*.yml
