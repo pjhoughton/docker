@@ -19,7 +19,7 @@
 
 # Allow Read Mes files 
 
-!.MD
+!.md
 
 # Allow specific environment files
 !example.env
