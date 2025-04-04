@@ -27,7 +27,9 @@ services:
       - 6789:6789           # Optional: UDP port for speed test
       - 5514:5514/udp       # Optional: UDP port for remote syslog
     networks:
-      - backend # Connect to the backend network
+      backend:
+        aliases:
+          - unifi-controller
     healthcheck:
       # Regular health checks to monitor container status
       test: ["CMD-SHELL", "curl -f http://localhost:8443 || exit 1"]

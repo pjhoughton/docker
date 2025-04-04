@@ -1,5 +1,6 @@
 #Docker Compose master file 
 
+
 # Define global networks
 networks:
   backend:
@@ -13,7 +14,7 @@ volumes:
 # Include all services
 services:
   autoheal:
-    # Service to automatically restart unhealthy containers
+    # Automatically restarts unhealthy containers
     extends:
       file: ./docker-compose.autoheal.yml
       service: autoheal
@@ -43,7 +44,7 @@ services:
       service: sonarr
 
   homepage:
-    # Homepage for centralized access to services and tools
+    # Centralized access to services and tools
     extends:
       file: ./docker-compose.homepage.yml
       service: homepage
@@ -55,36 +56,33 @@ services:
       service: bazarr
 
   semaphore:
-    # Semaphore service
+    # Ansible-based task and playbook automation tool
     extends:
       file: ./docker-compose.semaphore.yml
       service: semaphore
 
   mysql:
-    # MySQL service required by Semaphore
+    # MySQL database for Semaphore
     extends:
       file: ./docker-compose.semaphore.yml
       service: mysql
-      
 
+# Placeholder for currently unused services
+# Uncomment and use as needed
+# xen-orchestra:
+#   # Manage virtualization infrastructure
+#   extends:
+#     file: ./docker-compose.xo.yml
+#     service: xen-orchestra
 
-# Currently unused so commented out 
+# gluetun:
+#   # VPN container for securing internet traffic
+#   extends:
+#     file: ./docker-compose.gluetun.yml
+#     service: gluetun
 
-  #xen-orchestra:
-    
-  # xen-orchestra
-  #    extends:
-  #     file: ./docker-compose.xo.yml
-  #     service: xen-orchestra
-
-  # gluetun:
-  #   # VPN container for securing internet traffic
-  #   extends:
-  #     file: ./docker-compose.gluetun.yml
-  #     service: gluetun
-
-  # unifi-controller:
-  #   # Unified controller for managing network devices
-  #   extends:
-  #     file: ./docker-compose.unifi.yml
-  #     service: unifi-controller
+# unifi-controller:
+#   # Unified controller for managing network devices
+#   extends:
+#     file: ./docker-compose.unifi.yml
+#     service: unifi-controller

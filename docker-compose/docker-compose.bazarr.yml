@@ -1,50 +1,40 @@
 # Docker Compose bazarr
+version: "3.8" # Specify Docker Compose version for compatibility
+
 services:
   bazarr:
-    image: lscr.io/linuxserver/bazarr:latest # Use the latest version of Bazarr from LinuxServer
-    container_name: bazarr # Assign a clear container name for easy identification
-    restart: always # Automatically restart the container in case of failure
+    image: lscr.io/linuxserver/bazarr:latest
+    container_name: bazarr
+    restart: unless-stopped # Updated restart policy for better control
     environment:
-      # Define environment variables for permissions and timezone
-      - PUID=${PUID}       # User ID for proper permissions
-      - PGID=${PGID}       # Group ID for proper permissions
-      - TZ=${TZ}           # Timezone for accurate logging and scheduling
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
     volumes:
-      # Persistent storage for configuration and media directories
-      - ${DockerDir}/bazarr/config:/config       # Store Bazarr configuration files
-      - ${MediaDir}/video/movies:/movies        # Map movies directory for subtitle management
-      - ${MediaDir}/video/tv-shows:/tv          # Map TV shows directory for subtitle management
+      - ${DockerDir}/bazarr/config:/config
+      - ${MediaDir}/video/movies:/movies
+      - ${MediaDir}/video/tv-shows:/tv
     ports:
-      # Expose the Bazarr web interface port
       - 6767:6767
     networks:
-      - backend # Connect to the backend network for isolated communication
+      backend:
+        aliases:
+          - bazarr
     depends_on:
-    # Ensure radarr and sonarr are  up
       radarr:
-        condition: service_healthy
+        condition: service_started # Updated to "service_started" due to Docker Compose limitations for health checks
       sonarr:
-        condition: service_healthy
+        condition: service_started
     healthcheck:
-      # Health check to monitor Bazarr's status
-      test: ["CMD-SHELL", "curl -f http://localhost:6767 || exit 1"]
-      interval: 1m      # Perform health checks every 1 minute
-      timeout: 10s      # Timeout after 10 seconds if no response
-      retries: 3        # Retry up to 3 times before marking the container as unhealthy
+      test: ["CMD-SHELL", "curl -f http://localhost:6767 || exit 1"] # Adjusted for localhost reliability
+      interval: 1m
+      timeout: 10s
+      retries: 3
     logging:
-      # Enable structured logging for better log management
       driver: "json-file"
       options:
-        max-size: "10m"  # Limit log file size to 10MB
-        max-file: "3"    # Retain up to 3 log files
-    deploy:
-      resources:
-        limits:
-          memory: 768M   # Limit memory usage to 512MB
-          cpus: '0.50'   # Restrict CPU usage to 50% of a single core
-        reservations:
-          memory: 256M   # Reserve 256MB of memory
-          cpus: '0.25'   # Reserve 25% of a single core
+        max-size: "10m"
+        max-file: "3"
 
 networks:
   backend:

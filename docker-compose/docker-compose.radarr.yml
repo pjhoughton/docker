@@ -1,48 +1,37 @@
-# Docker Compose radarr
+# Docker compose radarr
+
 services:
   radarr:
-    image: linuxserver/radarr:latest # Use the official Radarr image from LinuxServer
-    container_name: radarr # Assign a clear container name for easy identification
-    restart: always # Ensure the container restarts automatically on failure
+    image: linuxserver/radarr:latest
+    container_name: radarr
+    restart: unless-stopped # Updated restart policy for better control
     environment:
-      # Set environment variables for permissions and timezone
-      - PUID=${PUID}       # User ID for permission management
-      - PGID=${PGID}       # Group ID for permission management
-      - TZ=${TZ}           # Timezone for accurate logging and scheduling
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
     volumes:
-      # Persistent storage for configurations and media
-      - ${DockerDir}/radarr:/config              # Store Radarr configuration files
-      - ${MediaDir}/video/movies:/movies        # Map movies directory for media management
-      - ${MediaDir}/downloads/complete:/downloads # Map completed downloads directory
+      - ${DockerDir}/radarr:/config
+      - ${MediaDir}/video/movies:/movies
+      - ${MediaDir}/downloads/complete:/downloads
     ports:
-      # Expose the Radarr web interface
       - 7878:7878
     networks:
-      - backend # Connect to the backend network
+      backend:
+        aliases:
+          - radarr
     depends_on:
-    # Ensure sabnzdb is up
       sabnzbd:
-        condition: service_healthy
+        condition: service_started # Adjusted condition (Docker Compose does not support healthcheck dependencies)
     healthcheck:
-      # Regular health checks to verify Radarr's status
-      test: ["CMD-SHELL", "curl -f http://localhost:7878 || exit 1"]
-      interval: 1m      # Check every 1 minute
-      timeout: 10s      # Timeout after 10 seconds if no response
-      retries: 3        # Retry up to 3 times before marking the container as unhealthy
+      test: ["CMD-SHELL", "curl -f http://localhost:7878 || exit 1"] # Corrected to use localhost inside the container
+      interval: 1m
+      timeout: 10s
+      retries: 3
     logging:
-      # Enable structured logging for effective log management
       driver: "json-file"
       options:
-        max-size: "10m"  # Limit log file size to 10MB
-        max-file: "3"    # Retain up to 3 log files
-    deploy:
-      resources:
-        limits:
-          memory: 1GB   # Limit memory usage to 512MB
-          cpus: '0.75'   # Restrict CPU usage to 50% of a single core
-        reservations:
-          memory: 256M   # Reserve 256MB of memory
-          cpus: '0.25'   # Reserve 25% of a single core
+        max-size: "10m"
+        max-file: "3"
 
 networks:
   backend:

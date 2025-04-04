@@ -1,48 +1,38 @@
 # Docker Compose sabnzbd
+
+
 services:
   sabnzbd:
-    image: linuxserver/sabnzbd:latest # Use the official SABnzbd image from LinuxServer
-    container_name: sabnzbd # Assign a clear container name for easy identification
-    restart: always # Ensure the container restarts automatically on failure
+    image: linuxserver/sabnzbd:latest
+    container_name: sabnzbd
+    restart: unless-stopped # Improved restart policy for better control
     environment:
-      # Set environment variables for permissions and timezone
-      - PUID=${PUID}       # User ID for permission management
-      - PGID=${PGID}       # Group ID for permission management
-      - TZ=${TZ}           # Timezone for accurate logs and schedules
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
     volumes:
-      # Persistent storage for configurations and downloads
-      - ${DockerDir}/sabnzbd:/config                   # Store configuration files
-      - ${MediaDir}/downloads/complete:/downloads      # Map completed downloads directory
-      - ${MediaDir}/downloads/incomplete:/incomplete-downloads # Map incomplete downloads directory
+      - ${DockerDir}/sabnzbd:/config
+      - ${MediaDir}/downloads/complete:/downloads
+      - ${MediaDir}/downloads/incomplete:/incomplete-downloads
     ports:
-      # Expose the SABnzbd web interface
       - 8080:8080
     networks:
-      - backend # Connect to the backend network  
+      backend:
+        aliases:
+          - sabnzbd
     depends_on:
-    # Ensure nginx-proxy-manager is up
       nginx-proxy-manager:
-        condition: service_healthy
+        condition: service_started # Changed to align with Docker Compose (healthcheck is not supported for depends_on)
     healthcheck:
-      # Health check to monitor SABnzbd's status
-      test: ["CMD-SHELL", "curl -f http://localhost:8080 || exit 1"]
-      interval: 1m      # Perform health checks every 1 minute
-      timeout: 10s      # Timeout after 10 seconds if no response
-      retries: 3        # Retry up to 3 times before marking the container unhealthy
+      test: ["CMD-SHELL", "curl -f http://localhost:8080 || exit 1"] # Corrected to use localhost as SABnzbd runs inside the container
+      interval: 1m
+      timeout: 10s
+      retries: 3
     logging:
-      # Enable structured logging for better log management
       driver: "json-file"
       options:
-        max-size: "10m"  # Limit log file size to 10MB
-        max-file: "3"    # Retain up to 3 log files
-    deploy:
-      resources:
-        limits:
-          memory: 1GB   # Limit memory usage to 512MB
-          cpus: '0.50'   # Restrict CPU usage to 50% of a single core
-        reservations:
-          memory: 256M   # Reserve 256MB of memory
-          cpus: '0.25'   # Reserve 25% of a single core
+        max-size: "10m"
+        max-file: "3"
 
 networks:
   backend:

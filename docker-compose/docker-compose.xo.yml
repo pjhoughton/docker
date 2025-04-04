@@ -20,6 +20,10 @@ services:
           - DAC_READ_SEARCH
         security_opt:
           - apparmor:unconfined
+        networks:
+          backend:
+            aliases:
+              - xen-orchestra
         volumes:
           - ${DockerDir}/xo-data:/var/lib/xo-server # Persistent storage for Xen Orchestra data
           - ${DockerDir}/redis-data:/var/lib/redis # Storage for Redis data
