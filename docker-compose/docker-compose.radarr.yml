@@ -2,7 +2,7 @@
 
 services:
   radarr:
-    image: linuxserver/radarr:latest
+    image: lscr.io/linuxserver/radarr:latest
     container_name: radarr
     restart: unless-stopped # Updated restart policy for better control
     environment:

@@ -3,7 +3,7 @@
 
 services:
   sabnzbd:
-    image: linuxserver/sabnzbd:latest
+    image: lscr.io/linuxserver/sabnzbd:latest
     container_name: sabnzbd
     restart: unless-stopped # Improved restart policy for better control
     environment:
