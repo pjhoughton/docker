@@ -55,18 +55,6 @@ services:
       file: ./docker-compose.bazarr.yml
       service: bazarr
 
-  semaphore:
-    # Ansible-based task and playbook automation tool
-    extends:
-      file: ./docker-compose.semaphore.yml
-      service: semaphore
-
-  mysql:
-    # MySQL database for Semaphore
-    extends:
-      file: ./docker-compose.semaphore.yml
-      service: mysql
-
 # Placeholder for currently unused services
 # Uncomment and use as needed
 # xen-orchestra:
@@ -86,3 +74,15 @@ services:
 #   extends:
 #     file: ./docker-compose.unifi.yml
 #     service: unifi-controller
+
+ # semaphore:
+    # Ansible-based task and playbook automation tool
+ #   extends:
+ #     file: ./docker-compose.semaphore.yml
+ #     service: semaphore
+
+ # mysql:
+ #   # MySQL database for Semaphore
+ #   extends:
+ #     file: ./docker-compose.semaphore.yml
+ #     service: mysql
