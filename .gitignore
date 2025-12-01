@@ -17,6 +17,7 @@ containers/
 !*.yaml
 !.gitignore
 !.gitkeep
+!.gitconfig
 
 
 # Allow Read Mes files 
