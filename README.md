@@ -1,3 +1,31 @@
+## 🧩 Docker README
+
+```markdown
+# Docker
+
+## Overview
+This repository contains Dockerfiles and Compose configurations for containerized applications in my homelab.  
+It simplifies deployment and ensures consistent environments.
+
+## Vision & Documentation
+This repository is part of my broader homelab and automation projects.  
+For the full vision, detailed documentation, and cross project context, visit my website:  
+👉 [pjhoughton.github.io](https://pjhoughton.github.io)
+
+*Building blocks of my homelab — automation, containers, and smart integrations, shared openly.*
+
+## Getting Started
+### Prerequisites
+- Docker Engine 24+
+- Docker Compose v2
+
+### Usage
+Build and run a container:
+```bash
+docker build -t myapp .
+docker run -d -p 8080:80 myapp
+
+
 Docker and Docker Compose Repository
 This repository contains configurations for managing multiple Docker containers using Docker Compose. The setup includes:
 
