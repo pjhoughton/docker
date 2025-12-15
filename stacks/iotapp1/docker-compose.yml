@@ -1,0 +1,25 @@
+# Stack file for iotapp1
+
+name: iotapp1
+
+# Include all services relevant to iotapp1
+include:
+  - ../../services/docker-compose.autoheal.yml
+  - ../../services/docker-compose.sabnzbd.yml
+  - ../../services/docker-compose.radarr.yml
+  - ../../services/docker-compose.sonarr.yml
+  - ../../services/docker-compose.bazarr.yml
+
+# Define stack-specific network
+networks:
+  backend:
+    name: backend_iotapp1
+    driver: bridge
+
+# Define stack-level volumes
+volumes:
+  docker_sock:
+    driver: local
+
+# Load environment variables for NAS paths and user IDs
+env_file: .env

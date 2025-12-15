@@ -1,0 +1,84 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: semaphore_mysql
+    restart: unless-stopped
+    labels:
+      - all=true
+
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+      - MYSQL_RANDOM_ROOT_PASSWORD=yes
+      - MYSQL_DATABASE=semaphore
+      - MYSQL_USER=${MYSQLUser}
+      - MYSQL_PASSWORD=${MYSQLPassword}
+
+    volumes:
+      - ${DockerDir}/semaphore/mysql:/var/lib/mysql
+
+    networks:
+      backend:
+        aliases:
+          - mysql-db
+
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  semaphore:
+    image: semaphoreui/semaphore:latest
+    container_name: semaphore
+    restart: unless-stopped
+
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+      - SEMAPHORE_DB_USER=${MYSQLUser}
+      - SEMAPHORE_DB_PASS=${MYSQLPassword}
+      - SEMAPHORE_DB_HOST=mysql-db
+      - SEMAPHORE_DB_PORT=3306
+      - SEMAPHORE_DB_DIALECT=mysql
+      - SEMAPHORE_DB=semaphore
+      - SEMAPHORE_PLAYBOOK_PATH=/tmp/semaphore/repository/playbooks
+      - ANSIBLE_CONFIG=/tmp/semaphore/repository/ansible.cfg
+      - SEMAPHORE_ADMIN_PASSWORD=${SEMAPHOREPassword}
+      - SEMAPHORE_ADMIN_NAME=admin
+      - SEMAPHORE_ADMIN_EMAIL=admin@localhost
+      - SEMAPHORE_ADMIN=admin
+      - SEMAPHORE_ACCESS_KEY_ENCRYPTION=${SEMPAPHOREKey}
+      - SEMAPHORE_LDAP_ACTIVATED=no
+
+    depends_on:
+      - mysql
+
+    volumes:
+      - ${DockerDir}/semaphore/data:/data
+      - ${DockerDir}/semaphore/data/id_ed25519_ansible.git:/root/.ssh/id_ed25519_ansible.git:ro
+      - ${DockerDir}/semaphore/data/id_ed25519_ansible.git.pub:/root/.ssh/id_ed25519_ansible.git.pub:ro
+      - ${DockerDir}/semaphore/data/ssh_config:/root/.ssh/config:ro
+
+    networks:
+      backend:
+        aliases:
+          - semaphore-app
+
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+networks:
+  backend:
+    external: true

@@ -1,11 +1,8 @@
-# Docker Compose sabnzbd
-
-
 services:
   sabnzbd:
     image: lscr.io/linuxserver/sabnzbd:latest
     container_name: sabnzbd
-    restart: unless-stopped # Improved restart policy for better control
+    restart: unless-stopped
     environment:
       - PUID=${PUID}
       - PGID=${PGID}
@@ -22,14 +19,14 @@ services:
           - sabnzbd
     depends_on:
       nginx-proxy-manager:
-        condition: service_started # Changed to align with Docker Compose (healthcheck is not supported for depends_on)
+        condition: service_started
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:8080 || exit 1"] # Corrected to use localhost as SABnzbd runs inside the container
+      test: ["CMD-SHELL", "curl -f http://localhost:8080 || exit 1"]
       interval: 1m
       timeout: 10s
       retries: 3
     logging:
-      driver: "json-file"
+      driver: json-file
       options:
         max-size: "10m"
         max-file: "3"

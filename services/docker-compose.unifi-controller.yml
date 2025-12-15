@@ -5,6 +5,8 @@ services:
     image: lscr.io/linuxserver/unifi-controller:latest # Latest Unifi Controller image from LinuxServer
     container_name: unifi-controller # Assign a clear container name for easy management
     restart: unless-stopped # Restart the container unless it is manually stopped
+    labels:
+      - all=true
     environment:
       # Set environment variables for permissions and memory limits
       - PUID=${PUID}       # User ID for permission management

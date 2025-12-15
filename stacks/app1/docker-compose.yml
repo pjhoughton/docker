@@ -1,0 +1,23 @@
+# Stack file for app1
+
+name: app1
+
+# Include all services relevant to app1
+include:
+  - ../../services/docker-compose.autoheal.yml
+  - ../../services/docker-compose.nginx.yml
+  - ../../services/docker-compose.homepage.yml
+
+# Define stack-specific network
+networks:
+  backend:
+    name: backend_app1
+    driver: bridge
+
+# Define stack-level volumes
+volumes:
+  docker_sock:
+    driver: local
+
+# Load environment variables for NAS paths and user IDs
+env_file: .env

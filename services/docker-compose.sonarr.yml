@@ -4,6 +4,9 @@ services:
     image: lscr.io/linuxserver/sonarr:latest
     container_name: sonarr
     restart: unless-stopped # Updated restart policy for more control
+    labels:
+      - all=true
+
     environment:
       - PUID=${PUID}
       - PGID=${PGID}

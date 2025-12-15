@@ -1,9 +1,10 @@
-#Docker Compose Homepage
 services:
   homepage:
     image: ghcr.io/gethomepage/homepage:latest
     container_name: homepage
-    restart: unless-stopped # Updated restart policy for more control
+    restart: unless-stopped
+    labels:
+      - all=true
     environment:
       - PUID=${PUID}
       - PGID=${PGID}
@@ -46,17 +47,21 @@ services:
           - homepage
     depends_on:
       nginx-proxy-manager:
-        condition: service_started # Updated depends_on condition
+        condition: service_started
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:3000 || exit 1"] # Adjusted health check to use localhost
+      test: ["CMD-SHELL", "curl -f http://localhost:3000 || exit 1"]
       interval: 1m
       timeout: 10s
       retries: 3
     logging:
-      driver: "json-file"
+      driver: json-file
       options:
         max-size: "10m"
         max-file: "3"
+
+volumes:
+  docker_sock:
+    external: true
 
 networks:
   backend:
