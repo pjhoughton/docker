@@ -40,7 +40,7 @@ services:
     volumes:
       - ${DockerDir}/homepage:/app/config
       - ${DockerDir}/homepage/public/icons:/app/public/icons
-      - docker_sock:/var/run/docker.sock:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
     networks:
       backend:
         aliases:
@@ -63,6 +63,3 @@ volumes:
   docker_sock:
     external: true
 
-networks:
-  backend:
-    external: true

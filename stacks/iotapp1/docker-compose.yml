@@ -1,5 +1,3 @@
-# Stack file for iotapp1
-
 name: iotapp1
 
 # Include all services relevant to iotapp1
@@ -13,13 +11,7 @@ include:
 # Define stack-specific network
 networks:
   backend:
-    name: backend_iotapp1
     driver: bridge
 
-# Define stack-level volumes
-volumes:
-  docker_sock:
-    driver: local
-
-# Load environment variables for NAS paths and user IDs
-env_file: .env
+# No stack-level volumes needed – services bind mount docker.sock directly
+volumes: {}

@@ -1,5 +1,3 @@
-# Stack file for app1
-
 name: app1
 
 # Include all services relevant to app1
@@ -7,17 +5,16 @@ include:
   - ../../services/docker-compose.autoheal.yml
   - ../../services/docker-compose.nginx.yml
   - ../../services/docker-compose.homepage.yml
+  - ../../services/docker-compose.sabnzbd.yml
+  - ../../services/docker-compose.radarr.yml
+  - ../../services/docker-compose.sonarr.yml
+  - ../../services/docker-compose.bazarr.yml
 
 # Define stack-specific network
 networks:
   backend:
-    name: backend_app1
     driver: bridge
 
-# Define stack-level volumes
-volumes:
-  docker_sock:
-    driver: local
+# No docker_sock volume here – services will bind mount it directly
+volumes: {}
 
-# Load environment variables for NAS paths and user IDs
-env_file: .env

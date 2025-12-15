@@ -53,6 +53,4 @@ services:
           memory: 512M   # Reserve 512MB of memory
           cpus: '0.25'   # Reserve 25% of a single core
 
-networks:
-  backend:
-    external: true
+

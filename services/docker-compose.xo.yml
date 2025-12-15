@@ -32,6 +32,4 @@ services:
         max-size: "1M"
         max-file: "2"
 
-networks:
-  backend:
-    external: true
+

@@ -67,6 +67,3 @@ services:
       timeout: 10s
       retries: 3
 
-networks:
-  backend:
-    external: true

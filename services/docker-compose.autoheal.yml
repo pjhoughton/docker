@@ -12,7 +12,7 @@ services:
       - TZ=${TZ}
 
     volumes:
-      - docker_sock:/var/run/docker.sock:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
 
     networks:
       backend:
@@ -25,10 +25,4 @@ services:
         max-size: "10m"
         max-file: "3"
 
-volumes:
-  docker_sock:
-    external: true
 
-networks:
-  backend:
-    external: true
