@@ -5,10 +5,7 @@ include:
   - ../../services/docker-compose.autoheal.yml
   - ../../services/docker-compose.nginx.yml
   - ../../services/docker-compose.homepage.yml
-  - ../../services/docker-compose.sabnzbd.yml
-  - ../../services/docker-compose.radarr.yml
-  - ../../services/docker-compose.sonarr.yml
-  - ../../services/docker-compose.bazarr.yml
+
 
 # Define stack-specific network
 networks:

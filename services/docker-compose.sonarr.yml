@@ -22,7 +22,7 @@ services:
         aliases:
           - sonarr
     depends_on:
-      - sabnzdb
+      - sabnzbd
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:8989 || exit 1"] # Modified to use "localhost" within the container
       interval: 1m
