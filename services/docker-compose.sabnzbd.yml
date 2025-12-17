@@ -17,9 +17,6 @@ services:
       backend:
         aliases:
           - sabnzbd
-    depends_on:
-      nginx-proxy-manager:
-        condition: service_started
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:8080 || exit 1"]
       interval: 1m

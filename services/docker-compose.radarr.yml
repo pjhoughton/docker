@@ -25,9 +25,7 @@ services:
           - radarr
 
     depends_on:
-      sabnzbd:
-        condition: service_started
-
+      - sabnzdb
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:7878 || exit 1"]
       interval: 1m
