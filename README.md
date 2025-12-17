@@ -33,12 +33,39 @@ A main docker-compose.yml file.
 
 Individual YAML files for each container that extend the main Compose file.
 
-Directory Structure
-├── docker-compose.yml          # Main Compose file
-├── docker-compose.container1.yml  # Specific setup for Container 1
-├── docker-compose.container2.yml  # Specific setup for Container 2
-├── README.md                   # Documentation
-└── .gitignore                  # Git ignore file
+
+single docker host
+
+ProjectRoot
+├── docker-compose.yml          
+├── docker-compose.container1.yml  
+├── docker-compose.container2.yml
+├── README.md
+└── .gitignore                
+
+multiple docker hosts 
+
+ProjectRoot
+├── services/
+│   ├── docker-compose.container1.yml           
+│   ├── docker-compose.container2.yml   
+│   └── docker-compose.container3.yml   
+│
+├── stacks/
+│   ├── app1/
+│   │   ├── docker-compose.yml 
+│   │   └── .env                   
+│   │
+│   └── iotapp1/
+│       ├── docker-compose.yml   
+│       └── .env                        
+│
+├── README.md                           
+└── .gitignore                     
+
+
+
+
 Usage
 Prerequisites
 Docker: Ensure Docker is installed on your system. You can install it from Docker's official site.
