@@ -2,6 +2,7 @@ services:
   homepage:
     image: ghcr.io/gethomepage/homepage:latest
     container_name: homepage
+    user: root   # <--- ADDED to fix Docker widget permissions
     restart: unless-stopped
     labels:
       - all=true
@@ -11,7 +12,7 @@ services:
       - TZ=${TZ}
       - HOMEPAGE_ALLOWED_HOSTS=${HOMEPAGE_ALLOWED_HOSTS}
       - HOMEPAGE_VAR_CockpitURL=${HOMEPAGE_VAR_CockpitURL}
-      - HOMEPAGE_VAR_DockerURL=${HOMEPAGE_VAR_DockerURL}
+      #- HOMEPAGE_VAR_DockerURL=${HOMEPAGE_VAR_DockerURL}
       - HOMEPAGE_VAR_BazarrURL=${HOMEPAGE_VAR_BazarrURL}
       - HOMEPAGE_VAR_HomeAssistantURL=${HOMEPAGE_VAR_HomeAssistantURL}
       - HOMEPAGE_VAR_HomeserverURL=${HOMEPAGE_VAR_HomeserverURL}
@@ -62,4 +63,3 @@ services:
 volumes:
   docker_sock:
     external: true
-
