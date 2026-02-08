@@ -1,35 +1,52 @@
 services:
   xen-orchestra:
-    restart: unless-stopped
     image: ronivay/xen-orchestra:latest
     container_name: xen-orchestra
-    stop_grace_period: 1m
-    ports:
-      - "60:80"
-      - "6443:443"
+    restart: unless-stopped
+    labels:
+      - all=true
+
     environment:
       - PUID=${PUID}
       - PGID=${PGID}
       - TZ=${TZ}
+      - LANG=${LANG}
       - HTTP_PORT=80
-      - HTTPS_PORT=443
-      - REDIRECT_TO_HTTPS=true
+
+    ports:
+      - 80:80
+
+    volumes:
+      - ${DockerDir}/xen-orchestra/xo-data:/var/lib/xo-server
+      - ${DockerDir}/xen-orchestra/redis-data:/var/lib/redis
+      - ${DockerDir}/xen-orchestra/vddk-lib:/usr/local/lib/vddk
+      # - ${DockerDir}/xen-orchestra/config:/etc/xo-server
+      # - ${DockerDir}/xen-orchestra/cert.pem:/cert.pem
+      # - ${DockerDir}/xen-orchestra/cert.key:/cert.key
+
     cap_add:
       - SYS_ADMIN
-      - DAC_READ_SEARCH
+
     security_opt:
       - apparmor:unconfined
+
+    # Optional: only needed for file‑level restore
+    # devices:
+    #   - /dev/fuse:/dev/fuse
+    #   - /dev/loop-control:/dev/loop-control
+    #   - /dev/loop0:/dev/loop0
+
     networks:
       backend:
         aliases:
           - xen-orchestra
-    volumes:
-      - ${DockerDir}/xo-data:/var/lib/xo-server
-      - ${DockerDir}/redis-data:/var/lib/redis
+
     logging:
-      driver: "json-file"
+      driver: json-file
       options:
         max-size: "1M"
         max-file: "2"
 
-
+networks:
+  backend:
+    external: true
