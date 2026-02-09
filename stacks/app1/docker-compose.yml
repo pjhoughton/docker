@@ -5,6 +5,7 @@ include:
   - ../../services/docker-compose.autoheal.yml
   - ../../services/docker-compose.nginx.yml
   - ../../services/docker-compose.homepage.yml
+  - ../../services/docker-compose.xo.yml
 
 
 # Define stack-specific network

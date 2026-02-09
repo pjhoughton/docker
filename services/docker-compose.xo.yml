@@ -13,7 +13,7 @@ services:
       - HTTP_PORT=80
 
     ports:
-      - 80:80
+      - 8080:80
 
     volumes:
       - ${DockerDir}/xen-orchestra/xo-data:/var/lib/xo-server
@@ -46,6 +46,4 @@ services:
         max-size: "1M"
         max-file: "2"
 
-networks:
-  backend:
-    external: true
+
