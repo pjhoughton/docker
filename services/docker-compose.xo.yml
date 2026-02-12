@@ -3,6 +3,7 @@ services:
     image: ronivay/xen-orchestra:latest
     container_name: xen-orchestra
     restart: unless-stopped
+    stop_grace_period: 1m
     labels:
       - all=true
 
@@ -10,18 +11,20 @@ services:
       - PUID=${PUID}
       - PGID=${PGID}
       - TZ=${TZ}
-      - HTTP_PORT=80
+      - HTTPS_PORT=443
+      - REDIRECT_TO_HTTPS=true
 
     ports:
-      - 8080:80
+      #- 8080:80
+      - 4443:443
 
     volumes:
       - ${DockerDir}/xen-orchestra/xo-data:/var/lib/xo-server
       - ${DockerDir}/xen-orchestra/redis-data:/var/lib/redis
       - ${DockerDir}/xen-orchestra/vddk-lib:/usr/local/lib/vddk
       # - ${DockerDir}/xen-orchestra/config:/etc/xo-server
-      # - ${DockerDir}/xen-orchestra/cert.pem:/cert.pem
-      # - ${DockerDir}/xen-orchestra/cert.key:/cert.key
+      - ${DockerDir}/xen-orchestra/cert.pem:/cert.pem
+      - ${DockerDir}/xen-orchestra/cert.key:/cert.key
 
     cap_add:
       - SYS_ADMIN

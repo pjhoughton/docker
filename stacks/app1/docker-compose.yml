@@ -6,7 +6,7 @@ include:
   - ../../services/docker-compose.nginx.yml
   - ../../services/docker-compose.homepage.yml
   - ../../services/docker-compose.xo.yml
-
+  - ../../services/docker-compose.plex.yml
 
 # Define stack-specific network
 networks:
