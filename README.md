@@ -131,3 +131,10 @@ bash
 docker-compose -f docker-compose.yml -f docker-compose.newcontainer.yml up -d
 Contributing
 Contributions are welcome! Please fork the repository, create a new branch, and submit a pull request.
+
+
+get plex token from inside docker container
+
+docker exec plex \
+  sed -n 's/.*PlexOnlineToken="\([^"]*\)".*/\1/p' \
+  "/config/Library/Application Support/Plex Media Server/Preferences.xml"
