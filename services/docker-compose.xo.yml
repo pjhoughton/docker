@@ -22,7 +22,7 @@ services:
       - ${DockerDir}/xen-orchestra/xo-data:/var/lib/xo-server
       - ${DockerDir}/xen-orchestra/redis-data:/var/lib/redis
       - ${DockerDir}/xen-orchestra/vddk-lib:/usr/local/lib/vddk
-      # - ${DockerDir}/xen-orchestra/config:/etc/xo-server
+      - ${DockerDir}/xen-orchestra/config:/etc/xo-server
       - ${DockerDir}/xen-orchestra/cert.pem:/cert.pem
       - ${DockerDir}/xen-orchestra/cert.key:/cert.key
 
