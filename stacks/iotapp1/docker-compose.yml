@@ -6,7 +6,7 @@ include:
   - ../../services/docker-compose.sabnzbd.yml
   - ../../services/docker-compose.radarr.yml
   - ../../services/docker-compose.sonarr.yml
-  - ../../services/docker-compose.bazarr.yml
+  #- ../../services/docker-compose.bazarr.yml
 
 # Define stack-specific network
 networks:
