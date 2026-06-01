@@ -33,10 +33,10 @@ services:
       - apparmor:unconfined
 
     # Optional: only needed for file‑level restore
-    # devices:
-    #   - /dev/fuse:/dev/fuse
-    #   - /dev/loop-control:/dev/loop-control
-    #   - /dev/loop0:/dev/loop0
+    devices:
+      - /dev/fuse:/dev/fuse
+      - /dev/loop-control:/dev/loop-control
+      - /dev/loop0:/dev/loop0
 
     networks:
       backend:
